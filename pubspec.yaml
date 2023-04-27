@@ -1,5 +1,5 @@
 name: karareco
-description: A new Flutter project.
+description: A voice recorder for karaoke.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -30,6 +30,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  audioplayers: ^3.0.1
+  path_provider: ^2.0.14
+  permission_handler: ^10.2.0
+  just_audio: ^0.9.32
+  provider: ^6.0.5
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  hive_generator: ^2.0.0
+  build_runner: ^2.3.3
+  flutter_sound: ^9.2.13
+  flutter_rating_bar: ^4.0.1
+  intl: ^0.18.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -88,3 +100,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+  assets:
+    - assets/images/
