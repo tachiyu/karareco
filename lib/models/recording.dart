@@ -16,6 +16,8 @@ class Recording {
   final String filePath;
   @HiveField(5)
   final int duration;
+  @HiveField(6)
+  final int dateTime;
 
   Recording({
     required this.id,
@@ -24,6 +26,7 @@ class Recording {
     required this.favorite,
     required this.filePath,
     required this.duration,
+    required this.dateTime,
   });
 }
 
@@ -40,6 +43,7 @@ class Recording {
 //       favorite: reader.readInt(),
 //       filePath: reader.readString(),
 //       duration: reader.readInt(),
+//       dateTime: reader.readInt(),
 //     );
 //   }
 
@@ -51,5 +55,6 @@ class Recording {
 //     writer.writeInt(obj.favorite);
 //     writer.writeString(obj.filePath);
 //     writer.writeInt(obj.duration);
+//     writer.writeInt(obj.dateTime);
 //   }
 // }

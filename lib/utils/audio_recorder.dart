@@ -1,11 +1,14 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AudioRecorder {
   FlutterSoundRecorder? _recorder;
   DateTime _startTime = DateTime.now();
+  int _duration = 0;
   bool _isRecording = false;
+  final _elapsedTimeController = StreamController<Duration>.broadcast();
 
   Future<void> init() async {
     try {
@@ -47,6 +50,18 @@ class AudioRecorder {
         );
         _startTime = DateTime.now();
         _isRecording = true;
+        Timer.periodic(
+          Duration(seconds: 1),
+          (timer) {
+            if (!_isRecording) {
+              timer.cancel();
+            } else {
+              _elapsedTimeController.add(
+                DateTime.now().difference(_startTime),
+              );
+            }
+          },
+        );
         return path;
       } catch (e) {
         print("Error starting recording: $e");
@@ -58,10 +73,9 @@ class AudioRecorder {
   }
 
   Future<int> stopRecording() async {
-    int durationSec = 0;
     if (_isRecording) {
       try {
-        durationSec = DateTime.now().difference(_startTime).inSeconds;
+        _duration += DateTime.now().difference(_startTime).inSeconds;
         final path = await _recorder?.stopRecorder();
         _isRecording = false;
         print("Recording stopped. File path: $path");
@@ -72,10 +86,44 @@ class AudioRecorder {
     } else {
       throw RecordingException('Not recording');
     }
-    return durationSec;
+    return _duration;
+  }
+
+  Future<int> pauseRecording() async {
+    if (_isRecording) {
+      try {
+        _duration += DateTime.now().difference(_startTime).inSeconds;
+        await _recorder?.pauseRecorder();
+        _isRecording = false;
+        print("Recording paused");
+      } catch (e) {
+        print("Error pausing recording: $e");
+        throw RecordingException('Error pausing recording: $e');
+      }
+    } else {
+      throw RecordingException('Not recording');
+    }
+    return _duration;
+  }
+
+  Future<void> resumeRecording() async {
+    if (!_isRecording) {
+      try {
+        await _recorder?.resumeRecorder();
+        _startTime = DateTime.now();
+        _isRecording = true;
+        print("Recording resumed");
+      } catch (e) {
+        print("Error resuming recording: $e");
+        throw RecordingException('Error resuming recording: $e');
+      }
+    } else {
+      throw RecordingException('Already recording');
+    }
   }
 
   bool get isRecording => _isRecording;
+  Stream<Duration> get elapsedTimeStream => _elapsedTimeController.stream;
 }
 
 class RecordingException implements Exception {

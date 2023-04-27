@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Home'),
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () => _navigateToSearchScreen(context),
           ),
         ],
@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     }
                     final fiteredRecordings =
-                        box.values.where(_filter).toList();
+                        box.values.where(_filter).toList().reversed.toList();
                     return ListView.builder(
                       itemCount: fiteredRecordings.length,
                       itemBuilder: (context, index) {
